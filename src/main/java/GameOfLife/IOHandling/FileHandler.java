@@ -2,7 +2,6 @@ package GameOfLife.IOHandling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.util.Scanner;
 
 public class FileHandler {
@@ -14,12 +13,12 @@ public class FileHandler {
     private int m;
     private Integer[][] board;
 
-    public FileHandler(String entryPath, String resultFilename){
+    public FileHandler(String entryPath, String resultFilename) {
         this.entryPath = entryPath;
         this.resultFilename = resultFilename;
     }
 
-    public int readData(){
+    public int readData() {
         File file = new File(entryPath);
         try {
             Scanner scanner = new Scanner(file);
@@ -27,11 +26,11 @@ public class FileHandler {
             int readLines = 0;
             String line;
 
-            while (scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
                 line = line.trim();
-                if(readLines == 0){
-                    if(line.split(" ").length == 2){
+                if (readLines == 0) {
+                    if (line.split(" ").length == 2) {
                         String first = line.split(" ")[0];
                         String second = line.split(" ")[1];
 
@@ -39,33 +38,31 @@ public class FileHandler {
                         m = Integer.parseInt(second);
 
                         board = new Integer[n + 2][m + 2];
+                    } else {
+                        return -1;
                     }
-                    else {
-                        return -1; //TODO jakas obsluga jak syf w 1. linijce
+                } else {
+                    String[] splitLine = line.split("");
+                    if (splitLine.length != m) {
+                        return -2;
                     }
-                }
-                else
-                {
-                    line = line.replace(" ", "");
-                    int lineLength = line.length();
-                    if(lineLength != m){
-                        return 0; //TODO obsluga jak jest linijka krotsza itp.
-                    }
-                    for (int i = 0; i < lineLength; i++){
-                        int value = line.charAt(i); //TODO sprawdzac parsowanie
-                        board[readLines][i + 1] = value;
+                    for (int i = 0; i < splitLine.length; i++) {
+                        int value = Integer.parseInt(splitLine[i]);
+                        if (value == 0 || value == 1)
+                            board[readLines][i + 1] = value;
+                        else
+                            return -1;
                     }
                 }
                 readLines++;
             }
-            if(readLines - 1 != n){
-                return -2; //TODO sprawdzanie czy wczytano wszystkie wiersze
+            if (readLines - 1 != n) {
+                return -3;
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace(); //TODO obsluga braku pliku
-        }
-        catch (NumberFormatException e){
-            e.printStackTrace(); //TODO tutaj tez
+            return -4;
+        } catch (NumberFormatException e) {
+            return -1;
         }
         return 0;
     }
