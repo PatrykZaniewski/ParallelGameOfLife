@@ -2,6 +2,8 @@ package GameOfLife.IOHandling;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class FileHandler {
@@ -11,7 +13,7 @@ public class FileHandler {
 
     private int n;
     private int m;
-    private Integer[][] board;
+    private int[][] board;
 
     public FileHandler(String entryPath, String resultFilename) {
         this.entryPath = entryPath;
@@ -37,7 +39,7 @@ public class FileHandler {
                         n = Integer.parseInt(first);
                         m = Integer.parseInt(second);
 
-                        board = new Integer[n + 2][m + 2];
+                        board = new int[n + 2][m + 2];
                     } else {
                         return -1;
                     }
@@ -63,6 +65,10 @@ public class FileHandler {
             return -4;
         } catch (NumberFormatException e) {
             return -1;
+        }
+        for(int i = 1; i <= m; i++){
+            board[0][i] = board[n][i];
+            board[n+1][i] = board[1][i];
         }
         return 0;
     }
@@ -99,11 +105,11 @@ public class FileHandler {
         this.m = m;
     }
 
-    public Integer[][] getBoard() {
+    public int[][] getBoard() {
         return board;
     }
 
-    public void setBoard(Integer[][] board) {
+    public void setBoard(int[][] board) {
         this.board = board;
     }
 }

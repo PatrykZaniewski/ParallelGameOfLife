@@ -1,5 +1,6 @@
 package GameOfLife;
 
+import GameOfLife.BoardProcessing.Creator;
 import GameOfLife.IOHandling.FileHandler;
 
 public class Main {
@@ -40,6 +41,18 @@ public class Main {
             handleError(error);
             System.exit(error);
         }
+
+        int[][] board = fileHandler.getBoard();
+
+        for(int i = 0; i <= fileHandler.getN() + 1; i++){
+            for(int j = 0; j <= fileHandler.getM() + 1; j++){
+                System.out.print(board[i][j]);
+            }
+            System.out.println();
+        }
+
+        Creator creator = new Creator();
+        creator.prepareData(board, args[2]);
         //TODO fredy i inne takie
     }
 }
