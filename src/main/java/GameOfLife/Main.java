@@ -51,8 +51,9 @@ public class Main {
             System.out.println();
         }
 
-        Creator creator = new Creator();
-        creator.prepareData(board, args[2]);
+        Creator creator = new Creator(board, Integer.parseInt(args[2]));
+        creator.prepareData(board);
+        creator.compute(Integer.parseInt(args[3]));
         //TODO fredy i inne takie
     }
 }

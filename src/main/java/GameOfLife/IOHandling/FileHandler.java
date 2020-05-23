@@ -70,6 +70,15 @@ public class FileHandler {
             board[0][i] = board[n][i];
             board[n+1][i] = board[1][i];
         }
+
+        for(int i = 1; i <= n; i++){
+            board[i][0] = board[i][m];
+            board[i][m + 1] = board[i][1];
+        }
+        board[0][0] = board[board.length - 2][board[0].length - 2];
+        board[0][board[0].length - 1] = board[board.length - 2][1];
+        board[board.length - 1][board[0].length - 1] = board[1][1];
+        board[board.length - 1][0] = board[1][board[0].length - 2];
         return 0;
     }
 
