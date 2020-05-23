@@ -1,6 +1,7 @@
 package GameOfLife.BoardProcessing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Creator {
     public int startComputing(int[][] board, int threads, int generations){
@@ -37,7 +38,7 @@ public class Creator {
     }
 
     public int[][] compute(int generations){
-        Worker worker = new Worker(board, indexes);
+        Worker worker = new Worker(board, new ArrayList<>(indexes));
         for (int i = 1; i <= generations; i++) {
             ArrayList<Thread> threadArrayList = new ArrayList<>();
             for(int j = 1; j <= threadsNumber; j++) {
@@ -45,22 +46,23 @@ public class Creator {
                 threadArrayList.add(thread);
             }
             for(int j = 0; j < threadsNumber; j++) {
-                threadArrayList.get(i).start();
+                threadArrayList.get(j).start();
                 try {
-                    threadArrayList.get(i).join();
+                    threadArrayList.get(j).join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             worker.rewriteBorders();
             worker.setBoard(worker.getNewBoard());
+            worker.setIds(new ArrayList<>(indexes));
         }
-//        for(int i = 0; i < worker.getNewBoard().length; i++){
-//            for(int j = 0; j < worker.getNewBoard()[0].length; j++){
-//                System.out.print(worker.getBoard()[i][j]);
-//            }
-//            System.out.println();
-//        }
+        for(int i = 0; i < worker.getNewBoard().length; i++){
+            for(int j = 0; j < worker.getNewBoard()[0].length; j++){
+                System.out.print(worker.getBoard()[i][j]);
+            }
+            System.out.println();
+        }
         return worker.getNewBoard();
     }
 }
