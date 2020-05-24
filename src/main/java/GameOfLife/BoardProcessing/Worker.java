@@ -83,7 +83,7 @@ public class Worker implements Runnable {
     }
 
     public int[][] rewriteBorders() {
-        //TODO to mozna podpiac pod ostatni watek zeby zwiekszyc wydajnosc i nie blokowac programu
+        //TODO to mozna podpiac pod ostatni watek zeby zwiekszyc wydajnosc i nie blokowac programu. Chociaz w sumie tak teraz mysle ze to nie ma wiekszej roznicy
         int n = newBoard.length - 2;
         int m = newBoard[0].length - 2;
         for (int i = 1; i <= m; i++) {

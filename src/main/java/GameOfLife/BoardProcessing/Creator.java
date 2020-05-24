@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Creator {
-    public int startComputing(int[][] board, int threads, int generations){
-        return 0;
-    }
 
     ArrayList<Integer> indexes = new ArrayList<>();
     int[][] board;

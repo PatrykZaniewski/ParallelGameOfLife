@@ -1,7 +1,6 @@
 package GameOfLife.IOHandling;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -79,6 +78,33 @@ public class FileHandler {
         board[0][board[0].length - 1] = board[board.length - 2][1];
         board[board.length - 1][board[0].length - 1] = board[1][1];
         board[board.length - 1][0] = board[1][board[0].length - 2];
+        return 0;
+    }
+
+    public int saveData(int[][] board){
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(resultFilename + ".txt"));
+            writer.println((board.length - 2) + " " + (board[0].length - 2));
+            for(int i = 1; i <= board.length - 2; i++){
+                for(int j = 1; j <= board[0].length - 2; j++){
+                    writer.print(board[i][j]);
+                }
+                writer.println("");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int makePicture(int[][] board){
+        //TODO robienie fotek
+        return 0;
+    }
+
+    public int makeGif(int generations){
+        //TODO robienie gifa
         return 0;
     }
 

@@ -50,10 +50,14 @@ public class Main {
             }
             System.out.println();
         }
+        System.out.println();
 
         Creator creator = new Creator(board, Integer.parseInt(args[2]));
         creator.prepareData(board);
-        creator.compute(Integer.parseInt(args[3]));
+        board = creator.compute(Integer.parseInt(args[3]));
+        fileHandler.saveData(board);
+
+
         //TODO fredy i inne takie
     }
 }
