@@ -56,6 +56,7 @@ public class Main {
         creator.prepareData(board);
         board = creator.compute(Integer.parseInt(args[3]));
         fileHandler.saveData(board);
+        fileHandler.makeGif(creator.getBoards());
 
 
         //TODO fredy i inne takie

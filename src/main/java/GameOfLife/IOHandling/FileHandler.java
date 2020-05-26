@@ -1,8 +1,7 @@
 package GameOfLife.IOHandling;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class FileHandler {
@@ -103,7 +102,7 @@ public class FileHandler {
         return 0;
     }
 
-    public int makeGif(int generations){
+    public int makeGif(List<int[][]> boards) {
         //TODO robienie gifa
         return 0;
     }

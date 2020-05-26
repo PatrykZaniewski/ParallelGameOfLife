@@ -1,27 +1,30 @@
 package GameOfLife.BoardProcessing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class Creator {
 
-    ArrayList<Integer> indexes = new ArrayList<>();
+    List<Integer> indexes = new ArrayList<>();
+    List<int[][]> boards;
     int[][] board;
     int threadsNumber;
 
-    public Creator(int[][] board, int threadsNumber){
+    public Creator(int[][] board, int threadsNumber) {
         this.board = board;
         this.threadsNumber = threadsNumber;
+        boards = new ArrayList<>();
+        boards.add(board);
     }
 
-    public int prepareData(int[][] board){
+    public int prepareData(int[][] board) {
         int last = board[0].length + 1;
         indexes.add(board[0].length + 1);
         int cellsNumber = (board[0].length * board.length - board[0].length - 2) - (board[0].length + 1) + 1;
         int surplus = cellsNumber % threadsNumber;
-        for(int i = 0; i < threadsNumber; i++){
+        for (int i = 0; i < threadsNumber; i++) {
             int operations = cellsNumber / threadsNumber;
-            if(surplus > 0){
+            if (surplus > 0) {
                 operations++;
                 surplus--;
             }
@@ -34,15 +37,15 @@ public class Creator {
         return 0;
     }
 
-    public int[][] compute(int generations){
+    public int[][] compute(int generations) {
         Worker worker = new Worker(board, new ArrayList<>(indexes));
         for (int i = 1; i <= generations; i++) {
-            ArrayList<Thread> threadArrayList = new ArrayList<>();
-            for(int j = 1; j <= threadsNumber; j++) {
+            List<Thread> threadArrayList = new ArrayList<>();
+            for (int j = 1; j <= threadsNumber; j++) {
                 Thread thread = new Thread(worker);
                 threadArrayList.add(thread);
             }
-            for(int j = 0; j < threadsNumber; j++) {
+            for (int j = 0; j < threadsNumber; j++) {
                 threadArrayList.get(j).start();
                 try {
                     threadArrayList.get(j).join();
@@ -50,16 +53,20 @@ public class Creator {
                     e.printStackTrace();
                 }
             }
-            worker.rewriteBorders();
+            boards.add(worker.rewriteBorders());
             worker.setBoard(worker.getNewBoard());
             worker.setIds(new ArrayList<>(indexes));
         }
-        for(int i = 0; i < worker.getNewBoard().length; i++){
-            for(int j = 0; j < worker.getNewBoard()[0].length; j++){
+        for (int i = 0; i < worker.getNewBoard().length; i++) {
+            for (int j = 0; j < worker.getNewBoard()[0].length; j++) {
                 System.out.print(worker.getBoard()[i][j]);
             }
             System.out.println();
         }
         return worker.getNewBoard();
+    }
+
+    public List<int[][]> getBoards() {
+        return boards;
     }
 }
