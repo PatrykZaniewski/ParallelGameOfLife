@@ -13,12 +13,12 @@ class CreatorTest {
 
     @BeforeEach
     public void setUp() {
-        board = new int[5][5];
-        board[1][2] = 1;
+        board = new int[7][7];
         board[2][3] = 1;
-        board[3][1] = 1;
-        board[3][2] = 1;
-        board[3][3] = 1;
+        board[3][4] = 1;
+        board[4][2] = 1;
+        board[4][3] = 1;
+        board[4][4] = 1;
     }
 
     @Test
@@ -29,25 +29,25 @@ class CreatorTest {
         creator.compute(1);
         List<int[][]> boards = creator.getBoards();
         assertEquals(2, boards.size());
-        int[][] boardGen = new int[5][5];
-        boardGen[1][2] = 1;
+        int[][] boardGen = new int[7][7];
         boardGen[2][3] = 1;
-        boardGen[3][1] = 1;
-        boardGen[3][2] = 1;
-        boardGen[3][3] = 1;
-        checkBoard(boards.get(0), boardGen);
-        boardGen = new int[5][5];
-        boardGen[2][1] = 1;
-        boardGen[2][3] = 1;
-        boardGen[3][2] = 1;
-        boardGen[3][3] = 1;
+        boardGen[3][4] = 1;
         boardGen[4][2] = 1;
+        boardGen[4][3] = 1;
+        boardGen[4][4] = 1;
+        checkBoard(boards.get(0), boardGen);
+        boardGen = new int[7][7];
+        boardGen[3][2] = 1;
+        boardGen[3][4] = 1;
+        boardGen[4][3] = 1;
+        boardGen[4][4] = 1;
+        boardGen[5][3] = 1;
         checkBoard(boards.get(1), boardGen);
     }
 
     private void checkBoard(int[][] outBoard, int[][] checkBoard) {
-        for (int i = 0; i < outBoard.length; i++) {
-            for (int j = 0; j < outBoard[0].length; j++) {
+        for (int i = 1; i < outBoard.length - 1; i++) {
+            for (int j = 1; j < outBoard[0].length - 1; j++) {
                 assertEquals(checkBoard[i][j], outBoard[i][j]);
             }
         }
