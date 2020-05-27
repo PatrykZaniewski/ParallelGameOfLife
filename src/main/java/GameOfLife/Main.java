@@ -22,12 +22,17 @@ public class Main {
             case -5:
                 System.err.println("Nie podano wymaganych argumentów.");
                 break;
+            case 666:
+                System.err.println("Nie można zapisać pliku .png. Sprawdź prawa do zapisu");
+                break;
             default:
                 System.err.println("Wystąpił nieznany błąd.");
                 break;
         }
-        System.err.println("Argumenty to:");
-        System.err.println("<plik wejścia> <nazwa wyjścia> <liczba wątków> <liczba generacji>");
+        if (code < 0) {
+            System.err.println("Argumenty to:");
+            System.err.println("<plik wejścia> <nazwa wyjścia> <liczba wątków> <liczba generacji>");
+        }
     }
 
     public static void main(String[] args) {
@@ -44,8 +49,8 @@ public class Main {
 
         int[][] board = fileHandler.getBoard();
 
-        for(int i = 0; i <= fileHandler.getN() + 1; i++){
-            for(int j = 0; j <= fileHandler.getM() + 1; j++){
+        for (int i = 0; i <= fileHandler.getN() + 1; i++) {
+            for (int j = 0; j <= fileHandler.getM() + 1; j++) {
                 System.out.print(board[i][j]);
             }
             System.out.println();
@@ -56,8 +61,10 @@ public class Main {
         creator.prepareData(board);
         board = creator.compute(Integer.parseInt(args[3]));
         fileHandler.saveData(board);
-        fileHandler.makeGif(creator.getBoards());
-
+        int outputFilesError = fileHandler.makeOutputFiles(creator.getBoards());
+        if (outputFilesError != 0) {
+            handleError(outputFilesError);
+        }
 
         //TODO fredy i inne takie
     }

@@ -1,5 +1,8 @@
 package GameOfLife.IOHandling;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
 import java.util.Scanner;
@@ -64,12 +67,12 @@ public class FileHandler {
         } catch (NumberFormatException e) {
             return -1;
         }
-        for(int i = 1; i <= m; i++){
+        for (int i = 1; i <= m; i++) {
             board[0][i] = board[n][i];
-            board[n+1][i] = board[1][i];
+            board[n + 1][i] = board[1][i];
         }
 
-        for(int i = 1; i <= n; i++){
+        for (int i = 1; i <= n; i++) {
             board[i][0] = board[i][m];
             board[i][m + 1] = board[i][1];
         }
@@ -80,12 +83,12 @@ public class FileHandler {
         return 0;
     }
 
-    public int saveData(int[][] board){
+    public int saveData(int[][] board) {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(resultFilename + ".txt"));
             writer.println((board.length - 2) + " " + (board[0].length - 2));
-            for(int i = 1; i <= board.length - 2; i++){
-                for(int j = 1; j <= board[0].length - 2; j++){
+            for (int i = 1; i <= board.length - 2; i++) {
+                for (int j = 1; j <= board[0].length - 2; j++) {
                     writer.print(board[i][j]);
                 }
                 writer.println("");
@@ -97,13 +100,31 @@ public class FileHandler {
         return 0;
     }
 
-    public int makePicture(int[][] board){
-        //TODO robienie fotek
-        return 0;
-    }
-
-    public int makeGif(List<int[][]> boards) {
+    public int makeOutputFiles(List<int[][]> boards) {
         //TODO robienie gifa
+        int index = 1;
+        for (int[][] board : boards) {
+            int cellSizeI = 800 / (board[0].length - 2);
+            int cellSizeJ = 800 / (board.length - 2);
+            BufferedImage image = new BufferedImage(cellSizeI * (board.length - 2), cellSizeJ * (board[0].length - 2), BufferedImage.TYPE_INT_RGB);
+            Graphics2D imageInterior = image.createGraphics();
+            for (int i = 1; i < board.length - 1; i++) {
+                for (int j = 1; j < board[0].length - 1; j++) {
+                    if (board[i][j] == 1) {
+                        imageInterior.setColor(Color.BLACK);
+                    } else {
+                        imageInterior.setColor(Color.WHITE);
+                    }
+                    imageInterior.fillRect((j - 1) * cellSizeJ, (i - 1) * cellSizeI, cellSizeJ, cellSizeI);
+                }
+            }
+            try {
+                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
+            } catch (IOException e) {
+                return 666;
+            }
+            index++;
+        }
         return 0;
     }
 
