@@ -1,6 +1,7 @@
 package GameOfLife.BoardProcessing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Worker implements Runnable {
 
@@ -71,10 +72,9 @@ public class Worker implements Runnable {
                     setValue(row, column, 1);
                 }
                 if (board[row][column] == 1) {
-                    if(counter != 2 && counter != 3){
+                    if (counter != 2 && counter != 3) {
                         setValue(row, column, 0);
-                    }
-                    else {
+                    } else {
                         setValue(row, column, 1);
                     }
                 }
@@ -100,7 +100,7 @@ public class Worker implements Runnable {
         newBoard[newBoard.length - 1][newBoard[0].length - 1] = newBoard[1][1];
         newBoard[newBoard.length - 1][0] = newBoard[1][newBoard[0].length - 2];
 
-        return newBoard;
+        return Arrays.stream(newBoard).map(int[]::clone).toArray(int[][]::new);
     }
 
     public ArrayList<Integer> getIds() {

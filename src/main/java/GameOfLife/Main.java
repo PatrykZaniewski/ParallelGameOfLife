@@ -22,9 +22,6 @@ public class Main {
             case -5:
                 System.err.println("Nie podano wymaganych argumentów.");
                 break;
-            case 666:
-                System.err.println("Nie można zapisać pliku .png. Sprawdź prawa do zapisu");
-                break;
             default:
                 System.err.println("Wystąpił nieznany błąd.");
                 break;
@@ -57,14 +54,12 @@ public class Main {
         }
         System.out.println();
 
+        //TODO Integer.parseInt koniecznie sprawdzamy numberformat!
         Creator creator = new Creator(board, Integer.parseInt(args[2]));
         creator.prepareData(board);
         board = creator.compute(Integer.parseInt(args[3]));
         fileHandler.saveData(board);
-        int outputFilesError = fileHandler.makeOutputFiles(creator.getBoards());
-        if (outputFilesError != 0) {
-            handleError(outputFilesError);
-        }
+        fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
 
         //TODO fredy i inne takie
     }

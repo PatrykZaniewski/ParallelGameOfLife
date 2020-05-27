@@ -1,9 +1,7 @@
 package GameOfLife.IOHandling;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -100,32 +98,23 @@ public class FileHandler {
         return 0;
     }
 
-    public int makeOutputFiles(List<int[][]> boards) {
+    public void makeOutputFiles(List<int[][]> boards, int threadNumber) {
         //TODO robienie gifa
-        int index = 1;
-        for (int[][] board : boards) {
-            int cellSizeI = 800 / (board[0].length - 2);
-            int cellSizeJ = 800 / (board.length - 2);
-            BufferedImage image = new BufferedImage(cellSizeI * (board.length - 2), cellSizeJ * (board[0].length - 2), BufferedImage.TYPE_INT_RGB);
-            Graphics2D imageInterior = image.createGraphics();
-            for (int i = 1; i < board.length - 1; i++) {
-                for (int j = 1; j < board[0].length - 1; j++) {
-                    if (board[i][j] == 1) {
-                        imageInterior.setColor(Color.BLACK);
-                    } else {
-                        imageInterior.setColor(Color.WHITE);
-                    }
-                    imageInterior.fillRect((j - 1) * cellSizeJ, (i - 1) * cellSizeI, cellSizeJ, cellSizeI);
-                }
-            }
-            try {
-                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
-            } catch (IOException e) {
-                return 666;
-            }
-            index++;
+        int boardsNumberPerThread = boards.size() / threadNumber;
+        List<Thread> pngThreads = new ArrayList<>();
+        for (int i = 0; i < threadNumber; i++) {
+            List<int[][]> boardsPerThread = new ArrayList<>(boards.subList(i * boardsNumberPerThread, (i + 1) * boardsNumberPerThread));
+            ParallelPngWorker worker = new ParallelPngWorker(boardsPerThread, resultFilename, i * boardsNumberPerThread + 1);
+            Thread thread = new Thread(worker);
+            pngThreads.add(thread);
         }
-        return 0;
+        for (Thread thread : pngThreads) {
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 
     public String getEntryPath() {
