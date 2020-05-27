@@ -1,7 +1,10 @@
 package GameOfLife.IOHandling;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class FileHandler {
@@ -11,7 +14,7 @@ public class FileHandler {
 
     private int n;
     private int m;
-    private Integer[][] board;
+    private int[][] board;
 
     public FileHandler(String entryPath, String resultFilename) {
         this.entryPath = entryPath;
@@ -37,7 +40,7 @@ public class FileHandler {
                         n = Integer.parseInt(first);
                         m = Integer.parseInt(second);
 
-                        board = new Integer[n + 2][m + 2];
+                        board = new int[n + 2][m + 2];
                     } else {
                         return -1;
                     }
@@ -63,6 +66,64 @@ public class FileHandler {
             return -4;
         } catch (NumberFormatException e) {
             return -1;
+        }
+        for (int i = 1; i <= m; i++) {
+            board[0][i] = board[n][i];
+            board[n + 1][i] = board[1][i];
+        }
+
+        for (int i = 1; i <= n; i++) {
+            board[i][0] = board[i][m];
+            board[i][m + 1] = board[i][1];
+        }
+        board[0][0] = board[board.length - 2][board[0].length - 2];
+        board[0][board[0].length - 1] = board[board.length - 2][1];
+        board[board.length - 1][board[0].length - 1] = board[1][1];
+        board[board.length - 1][0] = board[1][board[0].length - 2];
+        return 0;
+    }
+
+    public int saveData(int[][] board) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(resultFilename + ".txt"));
+            writer.println((board.length - 2) + " " + (board[0].length - 2));
+            for (int i = 1; i <= board.length - 2; i++) {
+                for (int j = 1; j <= board[0].length - 2; j++) {
+                    writer.print(board[i][j]);
+                }
+                writer.println("");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int makeOutputFiles(List<int[][]> boards) {
+        //TODO robienie gifa
+        int index = 1;
+        for (int[][] board : boards) {
+            int cellSizeI = 800 / (board[0].length - 2);
+            int cellSizeJ = 800 / (board.length - 2);
+            BufferedImage image = new BufferedImage(cellSizeI * (board.length - 2), cellSizeJ * (board[0].length - 2), BufferedImage.TYPE_INT_RGB);
+            Graphics2D imageInterior = image.createGraphics();
+            for (int i = 1; i < board.length - 1; i++) {
+                for (int j = 1; j < board[0].length - 1; j++) {
+                    if (board[i][j] == 1) {
+                        imageInterior.setColor(Color.BLACK);
+                    } else {
+                        imageInterior.setColor(Color.WHITE);
+                    }
+                    imageInterior.fillRect((j - 1) * cellSizeJ, (i - 1) * cellSizeI, cellSizeJ, cellSizeI);
+                }
+            }
+            try {
+                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
+            } catch (IOException e) {
+                return 666;
+            }
+            index++;
         }
         return 0;
     }
@@ -99,11 +160,11 @@ public class FileHandler {
         this.m = m;
     }
 
-    public Integer[][] getBoard() {
+    public int[][] getBoard() {
         return board;
     }
 
-    public void setBoard(Integer[][] board) {
+    public void setBoard(int[][] board) {
         this.board = board;
     }
 }
