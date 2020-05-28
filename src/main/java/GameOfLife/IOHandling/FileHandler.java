@@ -103,7 +103,12 @@ public class FileHandler {
         int boardsNumberPerThread = boards.size() / threadNumber;
         List<Thread> pngThreads = new ArrayList<>();
         for (int i = 0; i < threadNumber; i++) {
-            List<int[][]> boardsPerThread = new ArrayList<>(boards.subList(i * boardsNumberPerThread, (i + 1) * boardsNumberPerThread));
+            List<int[][]> boardsPerThread;
+            if (i == threadNumber - 1) {
+                boardsPerThread = new ArrayList<>(boards.subList(i * boardsNumberPerThread, boards.size()));
+            } else {
+                boardsPerThread = new ArrayList<>(boards.subList(i * boardsNumberPerThread, (i + 1) * boardsNumberPerThread));
+            }
             ParallelPngWorker worker = new ParallelPngWorker(boardsPerThread, resultFilename, i * boardsNumberPerThread + 1);
             Thread thread = new Thread(worker);
             pngThreads.add(thread);
