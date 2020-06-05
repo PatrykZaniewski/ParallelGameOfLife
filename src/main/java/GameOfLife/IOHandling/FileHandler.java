@@ -3,6 +3,7 @@ package GameOfLife.IOHandling;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class FileHandler {
@@ -17,6 +18,25 @@ public class FileHandler {
     public FileHandler(String entryPath, String resultFilename) {
         this.entryPath = entryPath;
         this.resultFilename = resultFilename;
+    }
+
+    public void generate(int n, int m){
+        n += 2;
+        m += 2;
+        Random random = new Random();
+        int[][] board = new int[n][m];
+        for(int i = 0; i < n; i++){
+            for(int j =0; j < m; j++){
+                if(random.nextDouble() > 0.5){
+                    board[i][j] = 1;
+                }
+                else
+                {
+                    board[i][j] = 0;
+                }
+            }
+        }
+        saveData(board);
     }
 
     public int readData() {

@@ -38,29 +38,30 @@ public class Main {
             System.exit(-5);
         }
         FileHandler fileHandler = new FileHandler(args[0], args[1]);
-        int error = fileHandler.readData();
-        if (error != 0) {
-            handleError(error);
-            System.exit(error);
-        }
-
-        int[][] board = fileHandler.getBoard();
-
-        for (int i = 0; i <= fileHandler.getN() + 1; i++) {
-            for (int j = 0; j <= fileHandler.getM() + 1; j++) {
-                System.out.print(board[i][j]);
+        if (args[0].equals("generate")) {
+            try {
+                fileHandler.generate(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
-            System.out.println();
+        } else {
+            int error = fileHandler.readData();
+            if (error != 0) {
+                handleError(error);
+                System.exit(error);
+            }
+
+            int[][] board = fileHandler.getBoard();
+
+            //TODO Integer.parseInt koniecznie sprawdzamy numberformat!
+            Creator creator = new Creator(board, Integer.parseInt(args[2]));
+            creator.prepareData(board);
+
+            board = creator.compute(Integer.parseInt(args[3]));
+
+            //fileHandler.saveData(board);
+            //fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
         }
-        System.out.println();
 
-        //TODO Integer.parseInt koniecznie sprawdzamy numberformat!
-        Creator creator = new Creator(board, Integer.parseInt(args[2]));
-        creator.prepareData(board);
-        board = creator.compute(Integer.parseInt(args[3]));
-        fileHandler.saveData(board);
-        fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
-
-        //TODO fredy i inne takie
     }
 }

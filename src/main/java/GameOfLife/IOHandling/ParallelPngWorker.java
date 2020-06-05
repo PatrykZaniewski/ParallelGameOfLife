@@ -37,7 +37,7 @@ public class ParallelPngWorker implements Runnable {
                 }
             }
             try {
-                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
+                ImageIO.write(image, "png", new File( resultFilename + index + ".png"));
             } catch (IOException e) {
                 System.err.println("Nie można zapisać pliku .png. Sprawdź prawa do zapisu");
                 System.exit(666);

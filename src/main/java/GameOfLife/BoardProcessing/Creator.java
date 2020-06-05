@@ -1,6 +1,7 @@
 package GameOfLife.BoardProcessing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Creator {
@@ -31,42 +32,72 @@ public class Creator {
             indexes.add(last + operations);
             last += operations;
         }
-//        for(Integer i: indexes){
-//            System.out.println(i);
-//        }
         return 0;
     }
 
     public int[][] compute(int generations) {
-        Worker worker = new Worker(board, new ArrayList<>(indexes));
+        Thread thread;
+        Worker worker;
+        long start = System.currentTimeMillis();
+
         for (int i = 1; i <= generations; i++) {
+            long e1 = System.currentTimeMillis();
             List<Thread> threadArrayList = new ArrayList<>();
+            List<Worker> workerArrayList = new ArrayList<>();
             for (int j = 1; j <= threadsNumber; j++) {
-                Thread thread = new Thread(worker);
+                worker = new Worker(board, indexes.get(j-1), indexes.get(j));
+                thread = new Thread(worker, String.valueOf(j));
+                thread.start();
                 threadArrayList.add(thread);
+                workerArrayList.add(worker);
             }
             for (int j = 0; j < threadsNumber; j++) {
-                threadArrayList.get(j).start();
                 try {
                     threadArrayList.get(j).join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            boards.add(worker.rewriteBorders());
-            worker.setBoard(worker.getNewBoard());
-            worker.setIds(new ArrayList<>(indexes));
-        }
-        for (int i = 0; i < worker.getNewBoard().length; i++) {
-            for (int j = 0; j < worker.getNewBoard()[0].length; j++) {
-                System.out.print(worker.getBoard()[i][j]);
+            long t = System.currentTimeMillis();
+            System.out.println(t - e1 + " liczenie");
+            for (int j = 0; j < threadsNumber; j++) {
+                worker = workerArrayList.get(j);
+                for(int k = worker.getLeft(); k < worker.getRight(); k++){
+                    int row = k / board[0].length;
+                    int column = k % board[0].length;
+                    board[row][column] = worker.getNewBoard()[row][column];
+                }
             }
-            System.out.println();
+            long t2 = System.currentTimeMillis();
+
+            this.rewriteBorders();
+            System.out.println((t2 - t) + " przepis");
+            boards.add(board);
         }
-        return worker.getNewBoard();
+        long finish = System.currentTimeMillis();
+        System.out.println(finish - start);
+        return board;
     }
 
     public List<int[][]> getBoards() {
         return boards;
+    }
+
+    public void rewriteBorders() {
+        int n = board.length - 2;
+        int m = board[0].length - 2;
+        for (int i = 1; i <= m; i++) {
+            board[0][i] = board[n][i];
+            board[n + 1][i] = board[1][i];
+        }
+
+        for (int i = 1; i <= n; i++) {
+            board[i][0] = board[i][m];
+            board[i][m + 1] = board[i][1];
+        }
+        board[0][0] = board[board.length - 2][board[0].length - 2];
+        board[0][board[0].length - 1] = board[board.length - 2][1];
+        board[board.length - 1][board[0].length - 1] = board[1][1];
+        board[board.length - 1][0] = board[1][board[0].length - 2];
     }
 }
