@@ -36,20 +36,25 @@ public class Creator {
     }
 
     public int[][] compute(int generations) {
-        Thread thread;
         Worker worker;
+        List<Thread> threadArrayList = new ArrayList<>();
+        List<Worker> workerArrayList = new ArrayList<>();
+        for (int i = 0; i < threadsNumber; i++) {
+            worker = new Worker();
+            worker.setLeft(indexes.get(i));
+            worker.setRight(indexes.get(i + 1));
+            Thread thread = new Thread(worker);
+            threadArrayList.add(thread);
+            workerArrayList.add(worker);
+        }
         long start = System.currentTimeMillis();
-
         for (int i = 1; i <= generations; i++) {
+
             long e1 = System.currentTimeMillis();
-            List<Thread> threadArrayList = new ArrayList<>();
-            List<Worker> workerArrayList = new ArrayList<>();
+
             for (int j = 1; j <= threadsNumber; j++) {
-                worker = new Worker(board, indexes.get(j-1), indexes.get(j));
-                thread = new Thread(worker, String.valueOf(j));
-                thread.start();
-                threadArrayList.add(thread);
-                workerArrayList.add(worker);
+                workerArrayList.get(j - 1).setBoard(board);
+                threadArrayList.get(j - 1).start();
             }
             for (int j = 0; j < threadsNumber; j++) {
                 try {
@@ -62,7 +67,8 @@ public class Creator {
             System.out.println(t - e1 + " liczenie");
             for (int j = 0; j < threadsNumber; j++) {
                 worker = workerArrayList.get(j);
-                for(int k = worker.getLeft(); k < worker.getRight(); k++){
+                for (int k = worker.getLeft(); k < worker.getRight(); k++) {
+
                     int row = k / board[0].length;
                     int column = k % board[0].length;
                     board[row][column] = worker.getNewBoard()[row][column];
@@ -70,10 +76,16 @@ public class Creator {
             }
             long t2 = System.currentTimeMillis();
 
-            this.rewriteBorders();
+            //this.rewriteBorders();
             System.out.println((t2 - t) + " przepis");
             boards.add(board);
         }
+//        for (int i = 0; i < board.length; i++){
+//            for(int j = 0; j < board[0].length; j++){
+//                System.out.print(board[i][j]);
+//            }
+//            System.out.println();
+//        }
         long finish = System.currentTimeMillis();
         System.out.println(finish - start);
         return board;

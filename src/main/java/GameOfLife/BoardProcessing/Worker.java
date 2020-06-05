@@ -1,5 +1,8 @@
 package GameOfLife.BoardProcessing;
 
+import java.util.Arrays;
+import java.util.Random;
+
 public class Worker implements Runnable {
 
     private int[][] board;
@@ -7,13 +10,6 @@ public class Worker implements Runnable {
 
     private int right;
     private int left;
-
-    public Worker(int[][] board, int left, int right) {
-        this.board = board;
-        this.newBoard = new int[board.length][board[0].length];
-        this.left = left;
-        this.right = right;
-    }
 
     @Override
     public void run() {
@@ -66,6 +62,7 @@ public class Worker implements Runnable {
 
     public void setBoard(int[][] board) {
         this.board = board;
+        this.newBoard = new int[board.length][board[0].length];
     }
 
     public int[][] getNewBoard() {
