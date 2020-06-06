@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
 
 public class ParallelPngWorker implements Runnable {
@@ -36,8 +37,9 @@ public class ParallelPngWorker implements Runnable {
                     imageInterior.fillRect((j - 1) * cellSizeJ, (i - 1) * cellSizeI, cellSizeJ, cellSizeI);
                 }
             }
+            Date date = new Date(System.currentTimeMillis());
             try {
-                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
+                ImageIO.write(image, "png", new File(System.getProperty("user.dir") + "\\" + date.toString() + "\\" + resultFilename + index + ".png"));
             } catch (IOException e) {
                 System.err.println("Nie można zapisać pliku .png. Sprawdź prawa do zapisu");
                 System.exit(666);

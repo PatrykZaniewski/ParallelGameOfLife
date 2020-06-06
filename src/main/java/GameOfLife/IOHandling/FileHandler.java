@@ -117,7 +117,14 @@ public class FileHandler {
     }
 
     public void makeOutputFiles(List<int[][]> boards, int threadNumber) {
-        //TODO robienie gifa
+        java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+        File folder = new File(System.getProperty("user.dir") + "\\" + date.toString());
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                System.err.println("Nie można utworzyć folderu. Sprawdź prawa do zapisu");
+                System.exit(667);
+            }
+        }
         int boardsNumberPerThread = boards.size() / threadNumber;
         List<Thread> pngThreads = new ArrayList<>();
         for (int i = 0; i < threadNumber; i++) {
