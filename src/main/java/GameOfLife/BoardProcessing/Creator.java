@@ -1,7 +1,6 @@
 package GameOfLife.BoardProcessing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Creator {
@@ -15,14 +14,14 @@ public class Creator {
         this.board = board;
         this.threadsNumber = threadsNumber;
         boards = new ArrayList<>();
-        int [][] tmp = new int[board.length][board[0].length];
-        for(int j = 0; j < board.length; j++){
+        int[][] tmp = new int[board.length][board[0].length];
+        for (int j = 0; j < board.length; j++) {
             tmp[j] = board[j].clone();
         }
         boards.add(tmp);
     }
 
-    public int prepareData(int[][] board) {
+    public void prepareData(int[][] board) {
         int last = board[0].length + 1;
         indexes.add(board[0].length + 1);
         int cellsNumber = (board[0].length * board.length - board[0].length - 2) - (board[0].length + 1) + 1;
@@ -36,7 +35,6 @@ public class Creator {
             indexes.add(last + operations);
             last += operations;
         }
-        return 0;
     }
 
     public int[][] compute(int generations) {
@@ -46,9 +44,8 @@ public class Creator {
         for (int i = 1; i <= generations; i++) {
             List<Thread> threadArrayList = new ArrayList<>();
             List<Worker> workerArrayList = new ArrayList<>();
-            long e1 = System.currentTimeMillis();
             for (int j = 1; j <= threadsNumber; j++) {
-                worker = new Worker(board, indexes.get(j-1), indexes.get(j));
+                worker = new Worker(board, indexes.get(j - 1), indexes.get(j));
                 thread = new Thread(worker, String.valueOf(j));
                 thread.start();
                 threadArrayList.add(thread);
@@ -61,8 +58,6 @@ public class Creator {
                     e.printStackTrace();
                 }
             }
-            long t = System.currentTimeMillis();
-            //System.out.println(t - e1 + " liczenie");
             for (int j = 0; j < threadsNumber; j++) {
                 worker = workerArrayList.get(j);
                 for (int k = worker.getLeft(); k < worker.getRight(); k++) {
@@ -72,25 +67,16 @@ public class Creator {
                     board[row][column] = worker.getNewBoard()[row][column];
                 }
             }
-
-            long t2 = System.currentTimeMillis();
             this.rewriteBorders();
-            //System.out.println((t2 - t) + " przepis");
 
-            int [][] tmp = new int[board.length][board[0].length];
-            for(int j = 0; j < board.length; j++){
+            int[][] tmp = new int[board.length][board[0].length];
+            for (int j = 0; j < board.length; j++) {
                 tmp[j] = board[j].clone();
             }
             boards.add(tmp);
         }
-//        for (int i = 0; i < board.length; i++){
-//            for(int j = 0; j < board[0].length; j++){
-//                System.out.print(board[i][j]);
-//            }
-//            System.out.println();
-//        }
         long finish = System.currentTimeMillis();
-        System.out.println(finish - start);
+        System.out.println("Liczenie plansz: " + (finish - start) + " ms");
         return board;
     }
 

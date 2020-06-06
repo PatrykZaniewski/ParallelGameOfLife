@@ -3,8 +3,6 @@ package GameOfLife;
 import GameOfLife.BoardProcessing.Creator;
 import GameOfLife.IOHandling.FileHandler;
 
-import java.util.Arrays;
-
 public class Main {
 
     private static void handleError(int code) {
@@ -25,7 +23,11 @@ public class Main {
                 System.err.println("Nie podano wymaganych argumentów.");
                 break;
             case -6:
-                System.err.println("Wprowadzona wartość odpowiadająca za liczbę wątków i/lub generacji nie jest liczbą");
+                System.err.println("Wprowadzona wartość odpowiadająca za liczbę wątków nie jest liczbą");
+                break;
+            case -7:
+                System.err.println("Wprowadzona wartość odpowiadająca za liczbę generacji nie jest liczbą");
+                break;
             default:
                 System.err.println("Wystąpił nieznany błąd.");
                 break;
@@ -38,47 +40,43 @@ public class Main {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-
+        int numberOfThreads = 0, numberOfGenerations = 0;
         if (args.length < 4) {
             handleError(-5);
             System.exit(-5);
         }
         FileHandler fileHandler = new FileHandler(args[0], args[1]);
+        try {
+            numberOfThreads = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            handleError(-6);
+            System.exit(-6);
+        }
+        try {
+            numberOfGenerations = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            handleError(-7);
+            System.exit(-7);
+        }
+
         if (args[0].equals("generate")) {
-            try {
-                fileHandler.generate(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            fileHandler.generate(numberOfThreads, numberOfGenerations);
         } else {
             int error = fileHandler.readData();
             if (error != 0) {
                 handleError(error);
                 System.exit(error);
             }
-
             int[][] board = fileHandler.getBoard();
+            Creator creator = new Creator(board, numberOfThreads);
+            creator.prepareData(board);
 
-            //TODO Integer.parseInt koniecznie sprawdzamy numberformat!
-            try {
-                Creator creator = new Creator(board, Integer.parseInt(args[2]));
-                creator.prepareData(board);
+            board = creator.compute(numberOfGenerations);
 
-                board = creator.compute(Integer.parseInt(args[3]));
-
-//            for(int[][] board1: creator.getBoards()){
-//                System.out.println(Arrays.deepToString(board1));
-//            }
-
-                fileHandler.saveData(board);
-                fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
-                long t2 = System.currentTimeMillis();
-                System.out.println((t2 - start) + " www");
-            }
-            catch (NumberFormatException e){
-                handleError(-6);
-                System.exit(-6);
-            }
+            fileHandler.saveData(board);
+            fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
+            long end = System.currentTimeMillis();
+            System.out.println("Calosc: " + (end - start) + " ms");
         }
 
     }
