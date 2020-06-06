@@ -15,7 +15,11 @@ public class Creator {
         this.board = board;
         this.threadsNumber = threadsNumber;
         boards = new ArrayList<>();
-        boards.add(board);
+        int [][] tmp = new int[board.length][board[0].length];
+        for(int j = 0; j < board.length; j++){
+            tmp[j] = board[j].clone();
+        }
+        boards.add(tmp);
     }
 
     public int prepareData(int[][] board) {
@@ -58,7 +62,7 @@ public class Creator {
                 }
             }
             long t = System.currentTimeMillis();
-            System.out.println(t - e1 + " liczenie");
+            //System.out.println(t - e1 + " liczenie");
             for (int j = 0; j < threadsNumber; j++) {
                 worker = workerArrayList.get(j);
                 for (int k = worker.getLeft(); k < worker.getRight(); k++) {
@@ -68,11 +72,16 @@ public class Creator {
                     board[row][column] = worker.getNewBoard()[row][column];
                 }
             }
-            long t2 = System.currentTimeMillis();
 
+            long t2 = System.currentTimeMillis();
             this.rewriteBorders();
-            System.out.println((t2 - t) + " przepis");
-            boards.add(board);
+            //System.out.println((t2 - t) + " przepis");
+
+            int [][] tmp = new int[board.length][board[0].length];
+            for(int j = 0; j < board.length; j++){
+                tmp[j] = board[j].clone();
+            }
+            boards.add(tmp);
         }
 //        for (int i = 0; i < board.length; i++){
 //            for(int j = 0; j < board[0].length; j++){

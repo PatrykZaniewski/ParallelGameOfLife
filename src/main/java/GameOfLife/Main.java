@@ -3,6 +3,8 @@ package GameOfLife;
 import GameOfLife.BoardProcessing.Creator;
 import GameOfLife.IOHandling.FileHandler;
 
+import java.util.Arrays;
+
 public class Main {
 
     private static void handleError(int code) {
@@ -33,6 +35,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+
         if (args.length < 4) {
             handleError(-5);
             System.exit(-5);
@@ -59,8 +63,14 @@ public class Main {
 
             board = creator.compute(Integer.parseInt(args[3]));
 
+//            for(int[][] board1: creator.getBoards()){
+//                System.out.println(Arrays.deepToString(board1));
+//            }
+
             fileHandler.saveData(board);
             fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
+            long t2 = System.currentTimeMillis();
+            System.out.println((t2 - start) + " www");
         }
 
     }
