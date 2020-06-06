@@ -24,6 +24,8 @@ public class Main {
             case -5:
                 System.err.println("Nie podano wymaganych argumentów.");
                 break;
+            case -6:
+                System.err.println("Wprowadzona wartość odpowiadająca za liczbę wątków i/lub generacji nie jest liczbą");
             default:
                 System.err.println("Wystąpił nieznany błąd.");
                 break;
@@ -58,19 +60,25 @@ public class Main {
             int[][] board = fileHandler.getBoard();
 
             //TODO Integer.parseInt koniecznie sprawdzamy numberformat!
-            Creator creator = new Creator(board, Integer.parseInt(args[2]));
-            creator.prepareData(board);
+            try {
+                Creator creator = new Creator(board, Integer.parseInt(args[2]));
+                creator.prepareData(board);
 
-            board = creator.compute(Integer.parseInt(args[3]));
+                board = creator.compute(Integer.parseInt(args[3]));
 
 //            for(int[][] board1: creator.getBoards()){
 //                System.out.println(Arrays.deepToString(board1));
 //            }
 
-            fileHandler.saveData(board);
-            fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
-            long t2 = System.currentTimeMillis();
-            System.out.println((t2 - start) + " www");
+                fileHandler.saveData(board);
+                fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
+                long t2 = System.currentTimeMillis();
+                System.out.println((t2 - start) + " www");
+            }
+            catch (NumberFormatException e){
+                handleError(-6);
+                System.exit(-6);
+            }
         }
 
     }
