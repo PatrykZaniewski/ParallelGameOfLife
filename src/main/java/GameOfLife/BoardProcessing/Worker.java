@@ -11,6 +11,13 @@ public class Worker implements Runnable {
     private int right;
     private int left;
 
+    public Worker(int[][] board, int left, int right) {
+        this.board = board;
+        this.newBoard = new int[board.length][board[0].length];
+        this.left = left;
+        this.right = right;
+    }
+
     @Override
     public void run() {
         for (int i = left; i < right; i++) {

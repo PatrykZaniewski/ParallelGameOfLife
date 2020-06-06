@@ -36,25 +36,19 @@ public class Creator {
     }
 
     public int[][] compute(int generations) {
+        Thread thread;
         Worker worker;
-        List<Thread> threadArrayList = new ArrayList<>();
-        List<Worker> workerArrayList = new ArrayList<>();
-        for (int i = 0; i < threadsNumber; i++) {
-            worker = new Worker();
-            worker.setLeft(indexes.get(i));
-            worker.setRight(indexes.get(i + 1));
-            Thread thread = new Thread(worker);
-            threadArrayList.add(thread);
-            workerArrayList.add(worker);
-        }
         long start = System.currentTimeMillis();
         for (int i = 1; i <= generations; i++) {
-
+            List<Thread> threadArrayList = new ArrayList<>();
+            List<Worker> workerArrayList = new ArrayList<>();
             long e1 = System.currentTimeMillis();
-
             for (int j = 1; j <= threadsNumber; j++) {
-                workerArrayList.get(j - 1).setBoard(board);
-                threadArrayList.get(j - 1).start();
+                worker = new Worker(board, indexes.get(j-1), indexes.get(j));
+                thread = new Thread(worker, String.valueOf(j));
+                thread.start();
+                threadArrayList.add(thread);
+                workerArrayList.add(worker);
             }
             for (int j = 0; j < threadsNumber; j++) {
                 try {
@@ -76,7 +70,7 @@ public class Creator {
             }
             long t2 = System.currentTimeMillis();
 
-            //this.rewriteBorders();
+            this.rewriteBorders();
             System.out.println((t2 - t) + " przepis");
             boards.add(board);
         }
