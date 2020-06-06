@@ -20,18 +20,16 @@ public class FileHandler {
         this.resultFilename = resultFilename;
     }
 
-    public void generate(int n, int m){
+    public void generate(int n, int m) {
         n += 2;
         m += 2;
         Random random = new Random();
         int[][] board = new int[n][m];
-        for(int i = 0; i < n; i++){
-            for(int j =0; j < m; j++){
-                if(random.nextDouble() > 0.5){
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (random.nextDouble() > 0.5) {
                     board[i][j] = 1;
-                }
-                else
-                {
+                } else {
                     board[i][j] = 0;
                 }
             }
@@ -135,6 +133,8 @@ public class FileHandler {
         }
         for (Thread thread : pngThreads) {
             thread.start();
+        }
+        for (Thread thread : pngThreads) {
             try {
                 thread.join();
             } catch (InterruptedException ignored) {

@@ -59,8 +59,8 @@ public class Main {
 
             board = creator.compute(Integer.parseInt(args[3]));
 
-            //fileHandler.saveData(board);
-            //fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
+            fileHandler.saveData(board);
+            fileHandler.makeOutputFiles(creator.getBoards(), Integer.parseInt(args[2]));
         }
 
     }

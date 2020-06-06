@@ -22,8 +22,8 @@ public class ParallelPngWorker implements Runnable {
     @Override
     public void run() {
         for (int[][] board : boards) {
-            int cellSizeI = 800 / (board[0].length - 2);
-            int cellSizeJ = 800 / (board.length - 2);
+            int cellSizeI = board[0].length - 2 > 800 ? 1 : 800 / (board[0].length - 2);
+            int cellSizeJ = board.length - 2 > 800 ? 1 : 800 / (board.length - 2);
             BufferedImage image = new BufferedImage(cellSizeI * (board.length - 2), cellSizeJ * (board[0].length - 2), BufferedImage.TYPE_INT_RGB);
             Graphics2D imageInterior = image.createGraphics();
             for (int i = 1; i < board.length - 1; i++) {
@@ -37,7 +37,7 @@ public class ParallelPngWorker implements Runnable {
                 }
             }
             try {
-                ImageIO.write(image, "png", new File( resultFilename + index + ".png"));
+                ImageIO.write(image, "png", new File(resultFilename + index + ".png"));
             } catch (IOException e) {
                 System.err.println("Nie można zapisać pliku .png. Sprawdź prawa do zapisu");
                 System.exit(666);
